@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,15 +18,19 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { CompleteBookingDto } from './dto/complete-booking.dto';
 import { BookingResponseDto } from './dto/booking-response.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('bookings')
 @Controller('bookings')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 

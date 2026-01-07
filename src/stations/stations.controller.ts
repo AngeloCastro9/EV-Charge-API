@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,11 +18,13 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { StationsService } from './stations.service';
 import { CreateStationDto } from './dto/create-station.dto';
 import { UpdateStationDto } from './dto/update-station.dto';
 import { StationResponseDto } from './dto/station-response.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('stations')
 @Controller('stations')
@@ -29,12 +32,15 @@ export class StationsController {
   constructor(private readonly stationsService: StationsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Create a new charging station' })
   @ApiCreatedResponse({
     description: 'Station created successfully',
     type: StationResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(@Body() createStationDto: CreateStationDto): Promise<StationResponseDto> {
     return this.stationsService.create(createStationDto);
   }
@@ -72,6 +78,8 @@ export class StationsController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a charging station' })
   @ApiParam({ name: 'id', description: 'Station ID' })
   @ApiOkResponse({
@@ -79,6 +87,7 @@ export class StationsController {
     type: StationResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Station not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   update(
     @Param('id') id: string,
     @Body() updateStationDto: UpdateStationDto,
@@ -87,11 +96,14 @@ export class StationsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a charging station' })
   @ApiParam({ name: 'id', description: 'Station ID' })
   @ApiNoContentResponse({ description: 'Station deleted successfully' })
   @ApiResponse({ status: 404, description: 'Station not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 409, description: 'Station has active bookings' })
   async remove(@Param('id') id: string): Promise<void> {
     await this.stationsService.remove(id);

@@ -28,8 +28,20 @@ async function bootstrap() {
     .setTitle('EV Charge Manager API')
     .setDescription('API for managing EV charging stations and bookings')
     .setVersion('1.0')
+    .addTag('auth', 'Authentication endpoints')
     .addTag('stations', 'Charging station management')
     .addTag('bookings', 'Booking management')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
