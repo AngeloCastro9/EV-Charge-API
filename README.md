@@ -322,21 +322,7 @@ All endpoints use class-validator decorators for request validation:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
 ## 👤 Author
 
 **Angelo Castro**
 - GitHub: [@AngeloCastro9](https://github.com/AngeloCastro9)
-
-## 🙏 Acknowledgments
-
-- NestJS team for the amazing framework
-- Prisma team for the excellent ORM
-- All contributors and maintainers
-
----
-
-Made with ❤️ using NestJS
