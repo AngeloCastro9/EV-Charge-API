@@ -1,17 +1,27 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { config } from 'dotenv';
+
+config();
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Starting database seeding...');
 
-  // Clear existing data (optional - comment out if you want to keep existing data)
-  await prisma.booking.deleteMany();
-  await prisma.station.deleteMany();
-  await prisma.user.deleteMany();
+  try {
+    await prisma.booking.deleteMany();
+    await prisma.station.deleteMany();
+    await prisma.user.deleteMany();
+  } catch (error) {
+    if (error.code === 'P2021') {
+      console.error('❌ Error: Database tables do not exist. Please run migrations first:');
+      console.error('   npm run prisma:migrate');
+      process.exit(1);
+    }
+    throw error;
+  }
 
-  // Create default user
   const hashedPassword = await bcrypt.hash('admin123', 10);
   const defaultUser = await prisma.user.create({
     data: {
@@ -24,7 +34,6 @@ async function main() {
   console.log(`   - Email: ${defaultUser.email}`);
   console.log(`   - Password: admin123 (change this in production!)`);
 
-  // Create charging stations
   const stations = await Promise.all([
     prisma.station.create({
       data: {

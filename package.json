@@ -19,7 +19,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:seed": "ts-node -r dotenv/config prisma/seed.ts",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f api",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/AngeloCastro9/EV-Charge-API#readme",
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node -r dotenv/config prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.20",
@@ -53,6 +53,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
+    "dotenv": "^17.2.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.14",
