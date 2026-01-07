@@ -18,7 +18,12 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f api",
+    "docker:build": "docker-compose up -d --build",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d"
   },
   "repository": {
     "type": "git",

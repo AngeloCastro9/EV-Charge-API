@@ -17,9 +17,10 @@ A robust and scalable REST API for managing Electric Vehicle (EV) charging stati
 
 ## 📋 Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn
-- PostgreSQL (v12 or higher)
+- Node.js (v18 or higher) - *Optional if using Docker*
+- npm or yarn - *Optional if using Docker*
+- PostgreSQL (v12 or higher) - *Optional if using Docker*
+- Docker and Docker Compose - *Required for Docker setup*
 - Git
 
 ## 🛠️ Installation
@@ -70,6 +71,93 @@ Swagger documentation will be available at `http://localhost:3000/api`
 ```bash
 npm run build
 npm run start:prod
+```
+
+## 🐳 Docker Setup
+
+### Quick Start with Docker Compose
+
+The easiest way to run the entire application (API + PostgreSQL) is using Docker Compose:
+
+1. **Production Mode** (API + Database):
+```bash
+docker-compose up -d
+```
+
+2. **Development Mode** (Database only):
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+npm run start:dev
+```
+
+### Docker Commands
+
+**Start services:**
+```bash
+docker-compose up -d
+```
+
+**Stop services:**
+```bash
+docker-compose down
+```
+
+**View logs:**
+```bash
+docker-compose logs -f api
+```
+
+**Rebuild and restart:**
+```bash
+docker-compose up -d --build
+```
+
+**Stop and remove volumes (clean database):**
+```bash
+docker-compose down -v
+```
+
+### Environment Variables for Docker
+
+Create a `.env` file in the root directory:
+
+```env
+# Database Configuration
+POSTGRES_USER=evcharge
+POSTGRES_PASSWORD=evcharge123
+POSTGRES_DB=ev_charge_db
+POSTGRES_PORT=5432
+
+# API Configuration
+PORT=3000
+NODE_ENV=production
+
+# Database URL (automatically set by docker-compose)
+DATABASE_URL=postgresql://evcharge:evcharge123@postgres:5432/ev_charge_db?schema=public
+```
+
+### Docker Development Workflow
+
+For development, it's recommended to run only the database in Docker:
+
+1. Start PostgreSQL:
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+2. Update your local `.env`:
+```env
+DATABASE_URL="postgresql://evcharge:evcharge123@localhost:5432/ev_charge_db?schema=public"
+```
+
+3. Run migrations:
+```bash
+npm run prisma:migrate
+```
+
+4. Start the API locally:
+```bash
+npm run start:dev
 ```
 
 ## 📚 API Documentation

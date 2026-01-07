@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ev-charge-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-evcharge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-evcharge123}
+      POSTGRES_DB: ${POSTGRES_DB:-ev_charge_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-evcharge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ev-charge-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: ev-charge-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-evcharge}:${POSTGRES_PASSWORD:-evcharge123}@postgres:5432/${POSTGRES_DB:-ev_charge_db}?schema=public
+      PORT: ${PORT:-3000}
+      NODE_ENV: production
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && node dist/main"
+    networks:
+      - ev-charge-network
+
+volumes:
+  postgres_data:
+
+networks:
+  ev-charge-network:
+    driver: bridge
+
