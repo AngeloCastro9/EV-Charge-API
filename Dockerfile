@@ -3,6 +3,9 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Install OpenSSL and required dependencies for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -24,6 +27,9 @@ FROM node:18-alpine AS production
 
 WORKDIR /app
 
+# Install OpenSSL and required dependencies for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -36,6 +42,10 @@ RUN npx prisma generate
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
+
+# Copy Prisma generated files and engines
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Expose port
 EXPOSE 3000
