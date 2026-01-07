@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -8,6 +9,20 @@ async function main() {
   // Clear existing data (optional - comment out if you want to keep existing data)
   await prisma.booking.deleteMany();
   await prisma.station.deleteMany();
+  await prisma.user.deleteMany();
+
+  // Create default user
+  const hashedPassword = await bcrypt.hash('admin123', 10);
+  const defaultUser = await prisma.user.create({
+    data: {
+      email: 'admin@evcharge.com',
+      password: hashedPassword,
+    },
+  });
+
+  console.log('✅ Created default user:');
+  console.log(`   - Email: ${defaultUser.email}`);
+  console.log(`   - Password: admin123 (change this in production!)`);
 
   // Create charging stations
   const stations = await Promise.all([

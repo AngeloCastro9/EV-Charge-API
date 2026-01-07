@@ -32,6 +32,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-evcharge}:${POSTGRES_PASSWORD:-evcharge123}@postgres:5432/${POSTGRES_DB:-ev_charge_db}?schema=public
       PORT: ${PORT:-3000}
       NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
