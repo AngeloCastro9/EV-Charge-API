@@ -1,0 +1,82 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log('🌱 Starting database seeding...');
+
+  // Clear existing data (optional - comment out if you want to keep existing data)
+  await prisma.booking.deleteMany();
+  await prisma.station.deleteMany();
+
+  // Create charging stations
+  const stations = await Promise.all([
+    prisma.station.create({
+      data: {
+        name: 'Downtown Charging Hub',
+        location: '123 Main Street, Downtown, City Center',
+        powerKw: 50.0,
+        isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Highway Rest Stop Station',
+        location: 'Highway 101, Mile Marker 45, Rest Area',
+        powerKw: 75.0,
+        isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Shopping Mall Charging Point',
+        location: '456 Commerce Blvd, Shopping District',
+        powerKw: 22.0,
+        isAvailable: false,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Airport Terminal Station',
+        location: 'International Airport, Terminal 2, Level 3',
+        powerKw: 100.0,
+        isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Residential Complex Charger',
+        location: '789 Residential Ave, Apartment Complex B',
+        powerKw: 11.0,
+        isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Corporate Office Charging Bay',
+        location: '100 Business Park, Tech Campus',
+        powerKw: 60.0,
+        isAvailable: true,
+      },
+    }),
+  ]);
+
+  console.log(`✅ Created ${stations.length} charging stations:`);
+  stations.forEach((station) => {
+    console.log(
+      `   - ${station.name} (${station.powerKw}kW) - ${station.isAvailable ? 'Available' : 'Unavailable'}`,
+    );
+  });
+
+  console.log('🌱 Database seeding completed successfully!');
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Error seeding database:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+

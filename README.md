@@ -57,6 +57,13 @@ npm run prisma:generate
 npm run prisma:migrate
 ```
 
+6. (Optional) Seed the database with sample data:
+```bash
+npm run prisma:seed
+```
+
+This will create 6 sample charging stations with different power capacities and availability statuses.
+
 ## 🚦 Running the Application
 
 ### Development Mode
@@ -81,8 +88,14 @@ The easiest way to run the entire application (API + PostgreSQL) is using Docker
 
 1. **Production Mode** (API + Database):
 ```bash
-docker-compose up -d
+# Build and start all services
+docker-compose up -d --build
+
+# Seed the database with sample data (run once)
+docker-compose exec api npm run prisma:seed
 ```
+
+The API will be available at `http://localhost:3000` and Swagger at `http://localhost:3000/api`
 
 2. **Development Mode** (Database only):
 ```bash
@@ -155,7 +168,12 @@ DATABASE_URL="postgresql://evcharge:evcharge123@localhost:5432/ev_charge_db?sche
 npm run prisma:migrate
 ```
 
-4. Start the API locally:
+4. (Optional) Seed the database:
+```bash
+npm run prisma:seed
+```
+
+5. Start the API locally:
 ```bash
 npm run start:dev
 ```
@@ -312,6 +330,7 @@ All endpoints use class-validator decorators for request validation:
 - `npm run test:cov` - Run tests with coverage
 - `npm run prisma:generate` - Generate Prisma Client
 - `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:seed` - Seed database with sample data
 - `npm run prisma:studio` - Open Prisma Studio
 
 ## 🤝 Contributing
