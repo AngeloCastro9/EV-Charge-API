@@ -22,14 +22,12 @@ export class BookingsService {
   ) {}
 
   async create(createBookingDto: CreateBookingDto): Promise<BookingResponseDto> {
-    // Verify station exists and is available
     const station = await this.stationsService.findOne(createBookingDto.stationId);
 
     if (!station.isAvailable) {
       throw new ConflictException('Station is not available');
     }
 
-    // Check for overlapping bookings
     const startTime = new Date(createBookingDto.startTime);
     const overlappingBooking = await this.prisma.booking.findFirst({
       where: {
@@ -62,7 +60,6 @@ export class BookingsService {
       );
     }
 
-    // Create booking
     return this.prisma.booking.create({
       data: {
         stationId: createBookingDto.stationId,
@@ -100,7 +97,7 @@ export class BookingsService {
   }
 
   async findByStation(stationId: string): Promise<BookingResponseDto[]> {
-    await this.stationsService.findOne(stationId); // Verify station exists
+    await this.stationsService.findOne(stationId);
 
     return this.prisma.booking.findMany({
       where: { stationId },
@@ -119,7 +116,6 @@ export class BookingsService {
       );
     }
 
-    // Update station availability
     await this.prisma.station.update({
       where: { id: booking.stationId },
       data: { isAvailable: false },
@@ -152,7 +148,6 @@ export class BookingsService {
       throw new BadRequestException('End time must be after start time');
     }
 
-    // Calculate price and duration
     const { durationMinutes, totalPrice } =
       this.pricingService.calculateBookingPrice(
         booking.powerKw,
@@ -160,13 +155,11 @@ export class BookingsService {
         endTime,
       );
 
-    // Update station availability
     await this.prisma.station.update({
       where: { id: booking.stationId },
       data: { isAvailable: true },
     });
 
-    // Update booking
     return this.prisma.booking.update({
       where: { id },
       data: {
@@ -189,7 +182,6 @@ export class BookingsService {
       throw new BadRequestException('Booking is already cancelled');
     }
 
-    // If booking was active, make station available again
     if (booking.status === BookingStatus.ACTIVE) {
       await this.prisma.station.update({
         where: { id: booking.stationId },
@@ -209,7 +201,7 @@ export class BookingsService {
     id: string,
     updateBookingDto: UpdateBookingDto,
   ): Promise<BookingResponseDto> {
-    await this.findOne(id); // Verify booking exists
+    await this.findOne(id);
 
     return this.prisma.booking.update({
       where: { id },
@@ -218,7 +210,7 @@ export class BookingsService {
   }
 
   async remove(id: string): Promise<void> {
-    await this.findOne(id); // Verify booking exists
+    await this.findOne(id);
 
     await this.prisma.booking.delete({
       where: { id },

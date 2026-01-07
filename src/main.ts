@@ -8,7 +8,6 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -17,13 +16,10 @@ async function bootstrap() {
     }),
   );
 
-  // Global logging interceptor
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Global exception filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger configuration
   const config = new DocumentBuilder()
     .setTitle('EV Charge Manager API')
     .setDescription('API for managing EV charging stations and bookings')

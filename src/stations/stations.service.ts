@@ -49,7 +49,7 @@ export class StationsService {
     id: string,
     updateStationDto: UpdateStationDto,
   ): Promise<StationResponseDto> {
-    await this.findOne(id); // Verify station exists
+    await this.findOne(id);
 
     return this.prisma.station.update({
       where: { id },
@@ -58,9 +58,8 @@ export class StationsService {
   }
 
   async remove(id: string): Promise<void> {
-    await this.findOne(id); // Verify station exists
+    await this.findOne(id);
 
-    // Check if station has active bookings
     const activeBookings = await this.prisma.booking.findFirst({
       where: {
         stationId: id,

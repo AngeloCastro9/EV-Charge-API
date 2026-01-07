@@ -7,7 +7,6 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(email: string, password: string) {
-    // Check if user already exists
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -16,10 +15,8 @@ export class UsersService {
       throw new ConflictException('User with this email already exists');
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     return this.prisma.user.create({
       data: {
         email,
@@ -53,7 +50,6 @@ export class UsersService {
       return null;
     }
 
-    // Return user without password
     const { password: _, ...result } = user;
     return result;
   }
