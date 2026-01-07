@@ -39,7 +39,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "sleep 2 && npx prisma migrate deploy && node dist/main"
+    command: sh -c "sleep 2 && npx prisma migrate deploy && node dist/main.js"
     networks:
       - ev-charge-network
 
