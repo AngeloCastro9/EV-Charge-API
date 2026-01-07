@@ -88,10 +88,8 @@ The easiest way to run the entire application (API + PostgreSQL) is using Docker
 
 1. **Production Mode** (API + Database):
 ```bash
-# Build and start all services
 docker-compose up -d --build
 
-# Seed the database with sample data (run once)
 docker-compose exec api npm run prisma:seed
 ```
 
