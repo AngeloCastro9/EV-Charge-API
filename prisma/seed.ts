@@ -56,7 +56,7 @@ async function main() {
         name: 'Shopping Mall Charging Point',
         location: '456 Commerce Blvd, Shopping District',
         powerKw: 22.0,
-        isAvailable: false,
+        isAvailable: false, // Under maintenance
       },
     }),
     prisma.station.create({
@@ -81,6 +81,22 @@ async function main() {
         location: '100 Business Park, Tech Campus',
         powerKw: 60.0,
         isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'University Campus Charger',
+        location: '200 University Ave, Campus Parking Lot A',
+        powerKw: 30.0,
+        isAvailable: true,
+      },
+    }),
+    prisma.station.create({
+      data: {
+        name: 'Hospital Emergency Charging',
+        location: '300 Medical Center Dr, Emergency Parking',
+        powerKw: 50.0,
+        isAvailable: false, // Under maintenance
       },
     }),
   ]);
